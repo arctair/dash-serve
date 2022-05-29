@@ -4,7 +4,7 @@
   "description": "Will serve a simple video player + stream \\*.m4s and \\*.m4s.tmp files with chunked transfer encoding.",
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/main.js"
   },
   "repository": {
     "type": "git",
