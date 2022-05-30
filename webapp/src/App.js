@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import dashjs from 'dashjs'
 
-const manifestURL = 'https://snare.cc/dash/live.brunchyroll.mpd'
+const manifestURL = 'https://dash.snare.cc/live.brunchyroll.mpd'
 const player = dashjs.MediaPlayer().create()
 player.updateSettings({
   streaming: {
