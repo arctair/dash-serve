@@ -1,0 +1,12 @@
+#!/bin/zsh
+cat <<EOF | ssh yagni -T
+  mkdir dash-serve.snare.cc
+  cd dash-serve.snare.cc
+  git init
+  git remote add -f origin https://github.com/arctair/dash-serve 
+  git config core.sparseCheckout true
+  echo api >> .git/info/sparse-checkout
+  git pull origin main
+  ln -s $HOME/dash-serve.snare.cc/api/scripts/dash-serve.snare.cc.service $HOME/.config/systemd/user
+  systemctl enable dash-serve.snare.cc --user
+EOF

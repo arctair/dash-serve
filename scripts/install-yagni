@@ -1,7 +1,0 @@
-#!/bin/zsh
-cat <<EOF | ssh yagni -T
-  mkdir dash-serve.snare.cc
-  git clone https://github.com/arctair/dash-serve dash-serve.snare.cc
-  ln -s $HOME/dash-serve.snare.cc/scripts/dash-serve.snare.cc.service $HOME/.config/systemd/user
-  systemctl enable dash-serve.snare.cc --user
-EOF
