@@ -1,4 +1,5 @@
 const http = require('http')
+const port = process.env.PORT || 8080
 
 function serverFn(request, response) {
   response.write('hello world')
@@ -6,4 +7,4 @@ function serverFn(request, response) {
 }
 
 const server = http.createServer(serverFn)
-server.listen(8080)
+server.listen(port)
