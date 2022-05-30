@@ -1,5 +1,7 @@
 const fs = require('fs')
 const http = require('http')
+const { spawn } = require('child_process')
+
 const port = process.env.PORT || 8080
 
 function requestListener(request, response) {
@@ -13,7 +15,18 @@ function requestListener(request, response) {
     if (fs.existsSync(filePath)) {
       copyFileToResponse(filePath, response)
     } else if (fs.existsSync(filePathTmp)) {
-      copyFileToResponse(filePathTmp, response)
+      const tail = spawn('tail', ['-f', filePathTmp, '-n', '+1'])
+      response.writeHead(200)
+      tail.stdout.on('data', function (data) {
+        response.write(data)
+      })
+      const interval = setInterval(() => {
+        if (fs.existsSync(filePath)) {
+          tail.kill()
+          response.end()
+          clearInterval(interval)
+        }
+      })
     }
   } else {
     response.writeHead(404)
