@@ -17,3 +17,7 @@ body,
 #root {
   height: 100%;
 }
+
+body {
+  background-color: #070707;
+}
