@@ -1,0 +1,16 @@
+hostedZoneName=snare.cc.
+name=dash.snare.cc
+value="`ssh mindful -- ip/addr/pri \; | grep ether1 | tr -s ' ' | cut -d ' ' -f3 | cut -d '/' -f1`"
+resourceRecordSet="`jq -nc \
+  --arg name "$name" \
+  --arg type "A" \
+  --argjson ttl 300 \
+  --arg value "$value" \
+  '{Name:$name,Type:$type,TTL:$ttl,ResourceRecords:[{Value:$value}]}'`"
+upsert="`jq -nc \
+  --argjson resourceRecordSet "$resourceRecordSet" \
+  '{Changes:[{Action:"UPSERT",ResourceRecordSet:$resourceRecordSet}]}'`"
+hostedZoneId=`aws route53 list-hosted-zones | jq --arg name "$hostedZoneName" '.HostedZones[]|select(.Name==$name).Id' -r`
+aws route53 change-resource-record-sets \
+  --hosted-zone-id $hostedZoneId \
+  --change-batch $upsert
