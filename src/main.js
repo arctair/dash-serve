@@ -4,10 +4,10 @@ const port = process.env.PORT || 8080
 
 function requestListener(request, response) {
   const urlComponents = request.url.split('/')
-  const last = urlComponents[urlComponents.length - 1]
-  if (last.endsWith('.mpd')) {
-    const manifestPath = `${process.env.DASH_DIR}/${last}`
-    fs.readFile(manifestPath, function (error, data) {
+  const fileName = urlComponents[urlComponents.length - 1]
+  const filePath = `${process.env.DASH_DIR}/${fileName}`
+  if (fileName.endsWith('.mpd')) {
+    fs.readFile(filePath, function (error, data) {
       if (error) {
         response.writeHead(500)
         response.end(error.message)
@@ -16,8 +16,11 @@ function requestListener(request, response) {
         response.end(data)
       }
     })
+  } else if (fileName.endsWith('.m4s')) {
+    response.write('yes this is an m4s')
+    response.end()
   } else {
-    response.write('hello world')
+    response.writeHead(404)
     response.end()
   }
 }
