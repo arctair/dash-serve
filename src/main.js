@@ -2,7 +2,9 @@ const http = require('http')
 const port = process.env.PORT || 8080
 
 function requestListener(request, response) {
-  console.log('hello logs')
+  const urlComponents = request.url.split('/')
+  const last = urlComponents[urlComponents.length - 1]
+  console.log(last)
   response.write('hello world')
   response.end()
 }
