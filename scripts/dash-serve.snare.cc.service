@@ -1,0 +1,11 @@
+[Unit]
+Description=dash-serve.snare.cc
+
+[Service]
+Environment=PORT=8091
+ExecStart=/usr/bin/node /home/arctair/dash-serve.snare.cc/src/main.js
+Type=simple
+WorkingDirectory=/home/arctair/dash-serve.snare.cc
+
+[Install]
+WantedBy=default.target
