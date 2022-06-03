@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useEffect, useRef, useState } from 'react'
 import dashjs from 'dashjs'
 
 const manifestURL = 'https://dash.snare.cc/live.brunchyroll.mpd'
@@ -17,22 +17,25 @@ player.updateSettings({
 })
 
 export default function App() {
-  const containerRef = useRef()
-  const videoRef = useRef()
+  const containerRef = useRef() as MutableRefObject<HTMLDivElement>
+  const videoRef = useRef() as MutableRefObject<HTMLVideoElement>
   const captivePause = useRef(false)
 
-  const [videoStyle, setVideoStyle] = useState({})
+  const [videoSize, setVideoSize] = useState<{
+    width?: number
+    height?: number
+  }>({})
 
   useEffect(() => {
-    player.initialize(videoRef.current, manifestURL, true)
+    player.initialize(videoRef.current!, manifestURL, true)
     return () => player.reset()
   }, [])
 
   useEffect(() => {
     const onResize = () =>
-      setVideoStyle((prev) => {
-        const container = containerRef.current
-        const video = videoRef.current
+      setVideoSize((prev) => {
+        const container = containerRef.current!
+        const video = videoRef.current!
         const width = Math.min(
           container.offsetWidth,
           (container.offsetHeight / video.offsetHeight) *
@@ -54,19 +57,21 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    const onKeyDown = (event) => {
-      if (event.code === 'Space' && !videoRef.current.paused) {
-        videoRef.current.pause()
+    const onKeyDown = (event: KeyboardEvent) => {
+      const video = videoRef.current!
+      if (event.code === 'Space' && !video.paused) {
+        video.pause()
         captivePause.current = true
       }
     }
-    const onKeyUp = (event) => {
+    const onKeyUp = (event: KeyboardEvent) => {
+      const video = videoRef.current!
       if (
         event.code === 'Space' &&
-        videoRef.current.paused &&
+        video.paused &&
         !captivePause.current
       ) {
-        videoRef.current.play()
+        video.play()
       }
       captivePause.current = false
     }
@@ -83,7 +88,7 @@ export default function App() {
       <video
         ref={videoRef}
         controls
-        style={{ ...videoStyle, margin: 'auto' }}
+        style={{ ...videoSize, margin: 'auto' }}
       />
     </div>
   )
