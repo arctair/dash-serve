@@ -32,7 +32,7 @@ function requestListener(request, response) {
           response.end()
           clearInterval(interval)
         }
-      })
+      }, 125)
     } else {
       response.writeHead(404)
       response.end()
