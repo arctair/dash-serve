@@ -10,7 +10,7 @@ player.updateSettings({
     },
     liveCatchup: {
       maxDrift: 0,
-      playbackRate: 0.5,
+      playbackRate: 0.125,
       latencyThreshold: 60,
     },
   },
