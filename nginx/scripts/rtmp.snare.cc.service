@@ -1,0 +1,13 @@
+[Unit]
+Description=rtmp.snare.cc
+
+[Service]
+ExecStart=/home/arctair/services/dash.snare.cc/nginx/build/objs/nginx -p /home/arctair/services/dash.snare.cc/nginx/build
+ExecStop=/home/arctair/services/dash.snare.cc/nginx/build/objs/nginx -p /home/arctair/services/dash.snare.cc/nginx/build -s stop
+ExecReload=/home/arctair/services/dash.snare.cc/nginx/build/objs/nginx -p /home/arctair/services/dash.snare.cc/nginx/build -s reload
+Type=forking
+PIDFile=/home/arctair/services/dash.snare.cc/nginx/build/logs/nginx.pid
+WorkingDirectory=/home/arctair/services/dash.snare.cc/nginx/build
+
+[Install]
+WantedBy=default.target

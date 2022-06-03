@@ -1,0 +1,44 @@
+#!/bin/zsh
+cat <<EOF | ssh hammock -T
+  if [ ! -d ~/services/dash.snare.cc ] ; then
+    mkdir -p ~/services/dash.snare.cc
+    cd ~/services/dash.snare.cc
+    git init
+    git remote add -f origin https://github.com/arctair/dash-serve
+    cd -
+  fi
+
+  cd ~/services/dash.snare.cc
+  git config core.sparseCheckout true
+  echo nginx >> .git/info/sparse-checkout
+  git sparse-checkout reapply
+
+  git pull origin main
+
+  cd nginx
+
+  mkdir -p downloads
+  if [ ! -f downloads/nginx-1.21.6.tar.gz ] ; then
+    curl -svLo downloads/nginx-1.21.6.tar.gz http://nginx.org/download/nginx-1.21.6.tar.gz
+    tar xf downloads/nginx-1.21.6.tar.gz
+    mv nginx-1.21.6 build
+    mv build/conf/nginx.conf build/conf/nginx.conf.bak
+    ln -s $HOME/services/dash.snare.cc/nginx/nginx.conf build/conf/nginx.conf
+  fi
+
+  if [ ! -f downloads/nginx-rtmp-module.zip ] ; then
+    curl -svLo downloads/nginx-rtmp-module.zip https://github.com/arut/nginx-rtmp-module/archive/refs/heads/master.zip
+    unzip downloads/nginx-rtmp-module.zip
+  fi 
+
+  if [ ! -f build/objs/nginx ] ; then
+    cd build
+    ./configure --add-module=../nginx-rtmp-module-master
+    make
+    mkdir -p logs
+    cd -
+  fi
+
+  ln -s $HOME/services/dash.snare.cc/nginx/scripts/rtmp.snare.cc.service $HOME/.config/systemd/user
+  systemctl --user enable rtmp.snare.cc.service
+EOF

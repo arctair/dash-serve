@@ -23,3 +23,5 @@ if [ ! -f build/objs/nginx ] ; then
   cd -
 fi
 
+ln -s `pwd`/scripts/rtmp.snare.cc.service /home/arctair/.config/systemd/user
+systemctl --user enable rtmp.snare.cc.service
