@@ -18,9 +18,36 @@ player.updateSettings({
 
 export default function App() {
   const ref = useRef()
+  const captivePause = useRef(false)
   useEffect(() => {
     player.initialize(ref.current, manifestURL, true)
   }, [])
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.code === 'Space' && !ref.current.paused) {
+        ref.current.pause()
+        captivePause.current = true
+      }
+    }
+    const onKeyUp = (event) => {
+      if (
+        event.code === 'Space' &&
+        ref.current.paused &&
+        !captivePause.current
+      ) {
+        ref.current.play()
+      }
+      captivePause.current = false
+    }
+    document.addEventListener('keyup', onKeyUp)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keyup', onKeyUp)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])
+
   return (
     <video
       ref={ref}
