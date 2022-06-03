@@ -1,0 +1,25 @@
+#!/bin/zsh
+release=nginx-1.21.6.tar.gz
+release_short=nginx-1.21.6
+mkdir -p downloads
+if [ ! -f downloads/$release ] ; then
+  curl -svLo downloads/$release http://nginx.org/download/$release
+  tar xf downloads/$release
+  mv $release_short build
+  mv `pwd`/build/conf/nginx.conf `pwd`/build/conf/nginx.conf.bak
+  ln -s `pwd`/nginx.conf `pwd`/build/conf/nginx.conf
+fi
+
+if [ ! -f downloads/nginx-rtmp-module.zip ] ; then
+  curl -svLo downloads/nginx-rtmp-module.zip https://github.com/arut/nginx-rtmp-module/archive/refs/heads/master.zip
+  unzip downloads/nginx-rtmp-module.zip
+fi 
+
+if [ ! -f build/objs/nginx ] ; then
+  cd build
+  ./configure --add-module=../nginx-rtmp-module-master
+  make
+  mkdir -p logs
+  cd -
+fi
+
