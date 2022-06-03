@@ -1,0 +1,17 @@
+#!/bin/zsh
+cat <<EOF | ssh hammock -T
+  if [ ! -d ~/services/dash.snare.cc ] ; then
+    mkdir -p ~/services/dash.snare.cc
+    cd ~/services/dash.snare.cc
+    git init
+    git remote add -f origin https://github.com/arctair/dash-serve 
+    cd -
+  fi
+  cd ~/services/dash.snare.cc
+  git config core.sparseCheckout true
+  echo api >> .git/info/sparse-checkout
+  git sparse-checkout reapply
+  git pull origin main
+  ln -s $HOME/services/dash.snare.cc/api/scripts/dash.snare.cc.service $HOME/.config/systemd/user
+  systemctl enable dash.snare.cc --user
+EOF

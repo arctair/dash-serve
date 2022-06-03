@@ -1,0 +1,12 @@
+[Unit]
+Description=dash.snare.cc
+
+[Service]
+Environment=DASH_DIR=/tmp/dash.snare.cc
+Environment=PORT=8082
+ExecStart=/usr/bin/node /home/arctair/services/dash.snare.cc/api/src/main.js
+Type=simple
+WorkingDirectory=/home/arctair/services/dash.snare.cc/api
+
+[Install]
+WantedBy=default.target

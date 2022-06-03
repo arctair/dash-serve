@@ -1,0 +1,8 @@
+#!/bin/zsh
+cat <<EOF | ssh hammock -T
+    cd /home/arctair/services/dash.snare.cc
+    git fetch
+    git reset origin/main --hard
+    systemctl daemon-reload --user
+    systemctl restart dash.snare.cc --user
+EOF
