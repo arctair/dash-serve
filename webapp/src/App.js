@@ -21,6 +21,7 @@ export default function App() {
   const captivePause = useRef(false)
   useEffect(() => {
     player.initialize(ref.current, manifestURL, true)
+    return () => player.reset()
   }, [])
 
   useEffect(() => {
