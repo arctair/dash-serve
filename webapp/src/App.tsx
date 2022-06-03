@@ -64,6 +64,11 @@ export default function App() {
         captivePause.current = true
       }
     }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [])
+
+  useEffect(() => {
     const onKeyUp = (event: KeyboardEvent) => {
       const video = videoRef.current!
       if (
@@ -76,11 +81,7 @@ export default function App() {
       captivePause.current = false
     }
     document.addEventListener('keyup', onKeyUp)
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('keyup', onKeyUp)
-      document.removeEventListener('keydown', onKeyDown)
-    }
+    return () => document.removeEventListener('keyup', onKeyUp)
   }, [])
 
   return (
