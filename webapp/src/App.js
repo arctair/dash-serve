@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import dashjs from 'dashjs'
 
 const manifestURL = 'https://dash.snare.cc/live.brunchyroll.mpd'
@@ -17,27 +17,56 @@ player.updateSettings({
 })
 
 export default function App() {
-  const ref = useRef()
+  const containerRef = useRef()
+  const videoRef = useRef()
   const captivePause = useRef(false)
+
+  const [videoStyle, setVideoStyle] = useState({})
+
   useEffect(() => {
-    player.initialize(ref.current, manifestURL, true)
+    player.initialize(videoRef.current, manifestURL, true)
     return () => player.reset()
   }, [])
 
   useEffect(() => {
+    const onResize = () =>
+      setVideoStyle((prev) => {
+        const container = containerRef.current
+        const video = videoRef.current
+        const width = Math.min(
+          container.offsetWidth,
+          (container.offsetHeight / video.offsetHeight) *
+            video.offsetWidth,
+        )
+        const height = Math.min(
+          container.offsetHeight,
+          (container.offsetWidth / video.offsetWidth) * video.offsetHeight,
+        )
+        if (prev.width !== width || prev.height !== height) {
+          return { width, height }
+        }
+        return prev
+      })
+
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  useEffect(() => {
     const onKeyDown = (event) => {
-      if (event.code === 'Space' && !ref.current.paused) {
-        ref.current.pause()
+      if (event.code === 'Space' && !videoRef.current.paused) {
+        videoRef.current.pause()
         captivePause.current = true
       }
     }
     const onKeyUp = (event) => {
       if (
         event.code === 'Space' &&
-        ref.current.paused &&
+        videoRef.current.paused &&
         !captivePause.current
       ) {
-        ref.current.play()
+        videoRef.current.play()
       }
       captivePause.current = false
     }
@@ -50,17 +79,12 @@ export default function App() {
   }, [])
 
   return (
-    <video
-      ref={ref}
-      controls
-      style={{
-        maxWidth: '100%',
-        maxHeight: '100%',
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-      }}
-    />
+    <div ref={containerRef} style={{ height: '100%', display: 'grid' }}>
+      <video
+        ref={videoRef}
+        controls
+        style={{ ...videoStyle, margin: 'auto' }}
+      />
+    </div>
   )
 }
