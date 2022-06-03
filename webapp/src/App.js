@@ -6,7 +6,7 @@ const player = dashjs.MediaPlayer().create()
 player.updateSettings({
   streaming: {
     delay: {
-      liveDelay: 4,
+      liveDelay: 1,
     },
     liveCatchup: {
       maxDrift: 0,
